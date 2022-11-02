@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Initialize npm
+npm init -y
+# Install npm packages
+echo "Installing packages..."
+npm i mithril webpack webpack-cli @babel/core babel-loader @babel/preset-env --save-dev
+
+# Babel config
+touch .babelrc
+echo '{ "presets": ["@babel/preset-env"], "sourceMaps": true }' > .babelrc
+
+# Webpack config 
+touch webpack.config.js
+echo "
+const path = require('path')
+
+module.exports = {
+    entry: path.resolve(__dirname, 'src/index.js'),
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'app.js',
+    },
+    module: {
+        rules: [{
+            test: /\.js$/,
+            exclude: /\/node_modules\//,
+            use: {
+                loader: 'babel-loader'
+            }
+        }]
+    }
+}
+" > webpack.config.js
+
+# Setup Index.html with mithril app script
+touch index.html
+echo "
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <title></title>
+  </head>
+  <body>
+    <script src='dist/app.js'></script>
+  </body>
+</html>
+" > index.html
+
+# Add scripts to package.json
+sed -i '/"scripts"/a\
+\t"devel": "webpack --mode=development --watch",\
+\t"build": "webpack --mode=production",
+' package.json
+
+# Preview package.json
+cat package.json
+
+# Mithril routes and homepage
+mkdir -p src/pages src/components
+touch src/index.js src/pages/home.js
+echo "const m = require('mithril');
+
+import Home from './pages/home';
+
+m.route(document.body, '/', {
+  '/': { render: () => { return m(Home) } }
+})" > src/index.js
+echo "const m = require('mithril');
+
+module.exports = {
+  view: () => {
+    return m('h2', 'Hello world!!!')
+  }
+}" > src/pages/home.js
+
+echo ""
+echo "Mithril is setup!"
+
+exit
