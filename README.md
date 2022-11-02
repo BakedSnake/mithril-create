@@ -8,6 +8,7 @@ A simple script to initialize a mithril project.
 Simply copy the script into your preferred location:
 ```
 cd mithril-create && cp -v mithril-create /usr/local/bin
+chmod 755 /usr/local/bin/mithril-create
 ```
 
 #### Usage
