@@ -1,0 +1,10 @@
+#!/bin/bash
+
+def() {
+  sed -i 's|FUNCSPATH|/usr/local/share/mithril-create|' mithril-create
+  sed -i 's|SHAREDIRPATH|/usr/local/share/mithril-create|' Makefile 
+}
+
+case "$1" in
+  *) def ;;
+esac
